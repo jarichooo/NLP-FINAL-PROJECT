@@ -160,11 +160,11 @@ Secrets are managed via GitHub Actions repository secrets.
 
 | Name | Role |
 |---|---|
-| [Sean Xander B. Aquino] | Model training, backend API |
-| [Joshua Jericho D. Barja] | Preprocessing pipeline, Backend, Deployment |
-| [John Renzzo C. Montenegro] | Rule-based correction engine |
-| [John Carlo E. Nas] | Frontend, deployment |
-| [Divino Al D. Ricafort] | Frontend, deployment |
+| Sean Xander B. Aquino | Model training, backend API |
+| Joshua Jericho D. Barja | Preprocessing pipeline, Backend, Deployment |
+| John Renzzo C. Montenegro | Rule-based correction engine |
+| John Carlo E. Nas | Frontend, deployment |
+| Divino Al D. Ricafort | Frontend, deployment |
 
 ---
 
