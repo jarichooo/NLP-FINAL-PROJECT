@@ -1,0 +1,145 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--m-border);
+}
+
+.inner {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--m-green-600), var(--m-green-900));
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  box-shadow: 0 10px 22px rgba(8, 70, 25, 0.25);
+}
+
+.brandText {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandName {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.beta {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(46, 111, 64, 0.55);
+  color: var(--m-green-600);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.navLink,
+.navLinkActive {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 10px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 650;
+  color: rgba(15, 23, 42, 0.72);
+  position: relative;
+}
+
+.navLink:hover {
+  color: var(--m-green-700);
+}
+
+.navLinkActive {
+  color: var(--m-green-900);
+}
+
+.navLinkActive::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 2px;
+  height: 2px;
+  background: var(--m-green-700);
+  border-radius: 999px;
+}
+
+.workspaceCta {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #0b0b0b;
+  color: #fff;
+  font-weight: 750;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.workspaceCta:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+}
+
+.workspaceCta:active {
+  transform: translateY(0);
+}
+
+.workspaceCta:focus-visible {
+  outline: 3px solid rgba(46, 111, 64, 0.28);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .brandName {
+    display: none;
+  }
+  .nav {
+    gap: 10px;
+  }
+  .navLink,
+  .navLinkActive {
+    padding: 10px 8px;
+  }
+}
