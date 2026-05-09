@@ -13,12 +13,17 @@ function NavLink({ active, children, onClick }) {
   )
 }
 
-export default function Navbar({ route, onRouteChange }) {
+export default function Navbar({ route, onRouteChange, onScrollToWorkspace }) {
   const [open, setOpen] = useState(false)
   const menuId = useId()
 
   const go = (next) => {
     onRouteChange(next)
+    setOpen(false)
+  }
+
+  const handleWorkspaceClick = () => {
+    onScrollToWorkspace()
     setOpen(false)
   }
 
@@ -43,7 +48,7 @@ export default function Navbar({ route, onRouteChange }) {
             <NavLink active={route === 'docs'} onClick={() => go('docs')}>
               Documentation
             </NavLink>
-            <button type="button" className={styles.workspaceCta} onClick={() => go('workspace')}>
+            <button type="button" className={styles.workspaceCta} onClick={handleWorkspaceClick}>
               Go to Workspace
             </button>
           </div>
@@ -71,7 +76,7 @@ export default function Navbar({ route, onRouteChange }) {
           <NavLink active={route === 'docs'} onClick={() => go('docs')}>
             Documentation
           </NavLink>
-          <button type="button" className={styles.workspaceCtaMobile} onClick={() => go('workspace')}>
+          <button type="button" className={styles.workspaceCtaMobile} onClick={handleWorkspaceClick}>
             Go to Workspace
           </button>
         </div>

@@ -4,6 +4,7 @@ import styles from "./HeroSection.module.css";
 import { FaBookOpen } from "react-icons/fa";
 import { RiCheckboxCircleFill } from "react-icons/ri";
 import { GoArrowRight } from "react-icons/go";
+import { motion } from "framer-motion";
 
 const FEATURES = [
   "Contextual Error Detection",
@@ -13,32 +14,54 @@ const FEATURES = [
 ];
 
 export default function HeroSection({ onGoToWorkspace }) {
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.8, ease: "easeOut" }
+  };
+
   return (
     <HeroBackground>
       <div className={styles.wrap}>
         <div className={styles.grid}>
           <div className={styles.left}>
-            <div className={styles.pill}>
+            <motion.div 
+              className={styles.pill}
+              {...fadeIn}
+              transition={{ ...fadeIn.transition, delay: 0.1 }}
+            >
               <span className={styles.pillDot} aria-hidden="true" />
               <span>
                 Powered by Hybrid Deep Learning &amp; Rule-Based Logic
               </span>
-            </div>
+            </motion.div>
 
-            <h1 className={styles.title}>
+            <motion.h1 
+              className={styles.title}
+              {...fadeIn}
+              transition={{ ...fadeIn.transition, delay: 0.2 }}
+            >
               Tagalog-English Grammar{" "}
               <span className={styles.titleGreen}>
                 Detection and Correction
               </span>
-            </h1>
+            </motion.h1>
 
-            <p className={styles.subtitle}>
+            <motion.p 
+              className={styles.subtitle}
+              {...fadeIn}
+              transition={{ ...fadeIn.transition, delay: 0.3 }}
+            >
               An AI-powered grammar checker built specifically for Taglish. Fix
               structural errors, correct word-bonding, and refine your
               code-switched sentences instantly while keeping your natural flow.
-            </p>
+            </motion.p>
 
-            <ul className={styles.featureList}>
+            <motion.ul 
+              className={styles.featureList}
+              {...fadeIn}
+              transition={{ ...fadeIn.transition, delay: 0.4 }}
+            >
               {FEATURES.map((item) => (
                 <li key={item} className={styles.featureItem}>
                   <RiCheckboxCircleFill
@@ -48,9 +71,13 @@ export default function HeroSection({ onGoToWorkspace }) {
                   <span>{item}</span>
                 </li>
               ))}
-            </ul>
+            </motion.ul>
 
-            <div className={styles.ctas}>
+            <motion.div 
+              className={styles.ctas}
+              {...fadeIn}
+              transition={{ ...fadeIn.transition, delay: 0.5 }}
+            >
               <button
                 type="button"
                 className={styles.primary}
@@ -63,9 +90,13 @@ export default function HeroSection({ onGoToWorkspace }) {
                 <FaBookOpen className={styles.btnIcon} aria-hidden="true" />
                 <span>View Documentation</span>
               </button>
-            </div>
+            </motion.div>
 
-            <div className={styles.stats}>
+            <motion.div 
+              className={styles.stats}
+              {...fadeIn}
+              transition={{ ...fadeIn.transition, delay: 0.6 }}
+            >
               <div className={styles.stat}>
                 <div className={styles.statValue}>94%</div>
                 <div className={styles.statLabel}>PRECISION</div>
@@ -78,12 +109,17 @@ export default function HeroSection({ onGoToWorkspace }) {
                 <div className={styles.statValue}>&lt; 150ms</div>
                 <div className={styles.statLabel}>REAL-TIME LATENCY</div>
               </div>
-            </div>
+            </motion.div>
           </div>
 
-          <div className={styles.right}>
+          <motion.div 
+            className={styles.right}
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}
+          >
             <HeroGraphic />
-          </div>
+          </motion.div>
         </div>
       </div>
     </HeroBackground>
