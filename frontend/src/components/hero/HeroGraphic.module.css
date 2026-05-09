@@ -43,19 +43,19 @@
 
 .tag_VB {
   top: 13%;
-  right: -2%;
+  right: 0%;
   color: #2e6f40;
 }
 
 .tag_PNN {
   bottom: 20%;
-  right: -2%;
+  right: 0%;
   color: #8b5cf6;
 }
 
 .tag_NN {
   bottom: 28%;
-  left: -2%;
+  left: 0%;
   color: #3b82f6;
 }
 
@@ -72,6 +72,7 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
   z-index: 20;
   animation: hgFadeUp 0.38s ease both;
+  white-space: nowrap;
 }
 
 .chipA {
@@ -203,6 +204,7 @@
   padding: 4px 12px;
   border-radius: 999px;
   background: rgba(46, 111, 64, 0.09);
+  white-space: nowrap;
 }
 
 .livePulse {
@@ -483,5 +485,91 @@
   50% {
     opacity: 1;
     transform: scale(1);
+  }
+}
+@media (max-width: 1023px) {
+  .outer {
+    width: 520px;
+    height: 520px;
+  }
+}
+
+@media (max-width: 768px) {
+  .outer {
+    width: 480px;
+    height: 480px;
+  }
+  .tagCode {
+    font-size: 10px;
+  }
+  .tagName {
+    font-size: 11px;
+  }
+  .floatingTag {
+    padding: 6px 10px;
+  }
+  .ruleText {
+    font-size: 11px;
+  }
+  .beforeLine, .afterLineOn, .afterLineOff {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 560px) {
+  .outer {
+    width: 420px;
+    height: 440px;
+  }
+  .livePill {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  .floatingTag {
+    padding: 4px 8px;
+    gap: 4px;
+  }
+  .tagIcon {
+    width: 10px;
+    height: 10px;
+  }
+  .ruleChip {
+    padding: 4px 10px;
+  }
+  .chipIcon {
+    width: 10px;
+    height: 10px;
+  }
+  .body {
+    padding: 12px 14px;
+  }
+  .tag_PNN {
+    bottom: 12%;
+    right: -2%;
+  }
+  .tag_NN {
+    bottom: 22%;
+    left: -2%;
+  }
+}
+
+@media (max-width: 440px) {
+  .outer {
+    width: 340px;
+    height: 400px;
+  }
+  .tagCode, .tagName, .ruleText {
+    font-size: 9px;
+  }
+  .beforeLine, .afterLineOn, .afterLineOff {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .sectionTitle, .sectionTitleAfterOff, .sectionTitleAfterOn {
+    font-size: 8px;
+  }
+  .footerTextOn, .footerTextOff, .footerMutedOn, .footerMutedOff {
+    font-size: 9px;
   }
 }

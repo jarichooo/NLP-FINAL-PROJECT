@@ -173,7 +173,7 @@ export default function HeroGraphic() {
             <div className={styles.livePill}>
               <span className={styles.livePulse} aria-hidden="true" />
               <span className={styles.liveText}>
-                SYMMETRY · Live Correction
+                MORPHIS · Live Correction
               </span>
             </div>
           </div>

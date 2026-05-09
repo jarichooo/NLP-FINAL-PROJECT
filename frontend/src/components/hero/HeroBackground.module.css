@@ -110,3 +110,19 @@
   height: 140px;
   opacity: 0.4;
 }
+@media (max-width: 768px) {
+  .blobA, .blobB {
+    width: 280px;
+    height: 280px;
+    filter: blur(80px);
+  }
+  .blobG {
+    width: 100%;
+    filter: blur(100px);
+  }
+  .dotsTopRight, .dotsTopLeft, .dotsBottomLeft {
+    opacity: 0.15;
+    width: 100px;
+    height: 100px;
+  }
+}

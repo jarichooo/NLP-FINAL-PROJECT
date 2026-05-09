@@ -1,4 +1,5 @@
 import styles from './Navbar.module.css'
+import { useId, useState } from 'react'
 
 function NavLink({ active, children, onClick }) {
   return (
@@ -13,10 +14,18 @@ function NavLink({ active, children, onClick }) {
 }
 
 export default function Navbar({ route, onRouteChange }) {
+  const [open, setOpen] = useState(false)
+  const menuId = useId()
+
+  const go = (next) => {
+    onRouteChange(next)
+    setOpen(false)
+  }
+
   return (
-    <header className={styles.header}>
+    <header className={open ? `${styles.header} ${styles.headerOpen}` : styles.header}>
       <div className={styles.inner}>
-        <div className={styles.brand} onClick={() => onRouteChange('home')}>
+        <div className={styles.brand} onClick={() => go('home')}>
           <div className={styles.logo} aria-hidden="true">
             M
           </div>
@@ -27,22 +36,46 @@ export default function Navbar({ route, onRouteChange }) {
         </div>
 
         <nav className={styles.nav} aria-label="Primary">
-          <NavLink active={route === 'home'} onClick={() => onRouteChange('home')}>
-            Home
-          </NavLink>
-          <NavLink active={route === 'docs'} onClick={() => onRouteChange('docs')}>
-            Documentation
-          </NavLink>
+          <div className={styles.navDesktop}>
+            <NavLink active={route === 'home'} onClick={() => go('home')}>
+              Home
+            </NavLink>
+            <NavLink active={route === 'docs'} onClick={() => go('docs')}>
+              Documentation
+            </NavLink>
+            <button type="button" className={styles.workspaceCta} onClick={() => go('workspace')}>
+              Go to Workspace
+            </button>
+          </div>
+
           <button
             type="button"
-            className={styles.workspaceCta}
-            onClick={() => onRouteChange('workspace')}
+            className={open ? styles.menuBtnOpen : styles.menuBtn}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            aria-controls={menuId}
+            onClick={() => setOpen((v) => !v)}
           >
-            Go to Workspace
+            <span className={styles.menuIcon} aria-hidden="true">
+              {open ? '×' : '☰'}
+            </span>
           </button>
         </nav>
+      </div>
+
+      <div id={menuId} className={open ? styles.menuPanelOpen : styles.menuPanel}>
+        <div className={styles.menuInner}>
+          <NavLink active={route === 'home'} onClick={() => go('home')}>
+            Home
+          </NavLink>
+          <NavLink active={route === 'docs'} onClick={() => go('docs')}>
+            Documentation
+          </NavLink>
+          <button type="button" className={styles.workspaceCtaMobile} onClick={() => go('workspace')}>
+            Go to Workspace
+          </button>
+        </div>
       </div>
     </header>
   )
 }
-
