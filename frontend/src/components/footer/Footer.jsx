@@ -12,7 +12,7 @@ export default function Footer() {
         </div>
         
         <div className={styles.copyright}>
-          © {year} Morphism AI. All rights reserved.
+          © {year} Morphism. All rights reserved.
         </div>
         
         <div className={styles.links}>

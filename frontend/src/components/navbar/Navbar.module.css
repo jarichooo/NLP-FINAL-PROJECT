@@ -5,7 +5,7 @@
   background: rgba(255, 255, 255, 1);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--m-border);
-  --nav-height: 64px;
+  --nav-height: 75px;
 }
 
 .headerOpen {
@@ -17,7 +17,7 @@
 .inner {
   max-width: 1500px;
   margin: 0 auto;
-  padding: 14px 18px;
+  padding: 0 32px;
   min-height: var(--nav-height);
   display: flex;
   align-items: center;
@@ -34,9 +34,9 @@
 }
 
 .logo {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
   background: linear-gradient(180deg, var(--m-green-600), var(--m-green-900));
   display: grid;
   place-items: center;
@@ -53,7 +53,7 @@
 }
 
 .brandName {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.02em;
 }
@@ -70,13 +70,13 @@
 .nav {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 32px;
 }
 
 .navDesktop {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 32px;
 }
 
 .navLink,
@@ -84,12 +84,14 @@
   appearance: none;
   border: 0;
   background: transparent;
-  padding: 10px 10px;
-  border-radius: 10px;
+  padding: 12px 6px;
   cursor: pointer;
-  font-weight: 650;
-  color: rgba(15, 23, 42, 0.72);
+  font-weight: 700;
+  font-size: 17px;
+  color: rgba(15, 23, 42, 0.65);
   position: relative;
+  transition: color 0.2s ease;
+  white-space: nowrap;
 }
 
 .navLink:hover {
@@ -98,22 +100,29 @@
 
 .navLinkActive {
   color: var(--m-green-900);
-  font-weight: 800;
 }
 
 .navLinkActive::after {
-  content: none;
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--m-green-600);
+  border-radius: 99px;
 }
 
 .workspaceCta {
   appearance: none;
   border: 0;
   cursor: pointer;
-  padding: 10px 14px;
+  padding: 12px 22px;
   border-radius: 12px;
   background: #0b0b0b;
   color: #fff;
   font-weight: 750;
+  font-size: 17px;
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
   transition:
     transform 180ms ease,
@@ -229,6 +238,32 @@
   gap: 10px;
 }
 
+.backdrop,
+.backdropOpen {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .backdrop,
+  .backdropOpen {
+    display: block;
+    position: fixed;
+    inset: 0;
+    top: var(--nav-height);
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+
+  .backdropOpen {
+    opacity: 0.5;
+    pointer-events: auto;
+  }
+}
+
+
 .menuInner .navLink,
 .menuInner .navLinkActive {
   width: 100%;
@@ -238,6 +273,10 @@
   border-radius: 10px;
   background: transparent;
   border: 0;
+}
+
+.menuInner .navLinkActive::after {
+  content: none;
 }
 
 .menuInner .navLink:hover {
@@ -278,38 +317,15 @@
   outline-offset: 3px;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .header {
-    --nav-height: 48px;
+    --nav-height: 64px;
   }
   .nav {
-    gap: 8px;
+    gap: 12px;
   }
-  .navLink,
-  .navLinkActive {
-    padding: 8px 6px;
-  }
-}
-
-@media (max-width: 560px) {
-  .header {
-    --nav-height: 44px;
-  }
-  .inner {
-    padding: 8px 14px;
-  }
-  .beta {
-    font-size: 12px;
-    padding: 2px 8px;
-  }
-}
-
-@media (max-width: 768px) {
   .navDesktop {
     display: none;
-  }
-  .header {
-    --nav-height: 48px;
   }
   .menuBtn,
   .menuBtnOpen {
@@ -318,6 +334,40 @@
   .menuPanel,
   .menuPanelOpen {
     display: block;
+  }
+  .logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+  }
+  .brandName {
+    font-size: 19px;
+  }
+  .navLink,
+  .navLinkActive {
+    font-size: 15px;
+    padding: 8px 6px;
+  }
+}
+
+@media (max-width: 560px) {
+  .header {
+    --nav-height: 60px;
+  }
+  .inner {
+    padding: 0 14px;
+  }
+  .logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+  .brandName {
+    font-size: 17px;
+  }
+  .beta {
+    font-size: 10px;
+    padding: 1px 6px;
   }
 }
 

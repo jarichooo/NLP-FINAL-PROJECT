@@ -60,7 +60,8 @@
 
 /* Header */
 .header {
-  padding: 18px 24px;
+  min-height: 70px;
+  padding: 0 24px;
   border-bottom: 1px solid rgba(15, 23, 42, 0.05);
   display: flex;
   justify-content: space-between;
@@ -150,7 +151,7 @@
   border: none;
   padding: 24px;
   font-family: inherit;
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.6;
   resize: none;
   outline: none;
@@ -164,7 +165,7 @@
 
 .outputArea {
   padding: 24px;
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.6;
   color: #0f172a;
   white-space: pre-wrap;
@@ -191,6 +192,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .oldVal {
@@ -233,29 +236,25 @@
 }
 
 .inspect {
-  color: rgba(15, 23, 42, 0.3);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.inspect:hover {
-  color: #084619;
+  display: none;
 }
 
 .mixedStatus {
-  margin-top: 12px;
-  background: rgba(34, 197, 94, 0.05);
-  border: 1px solid rgba(34, 197, 94, 0.1);
-  padding: 12px 16px;
-  border-radius: 12px;
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 12px 14px;
+  background: rgba(15, 23, 42, 0.03);
+  border-radius: 12px;
+  color: rgba(15, 23, 42, 0.65);
   font-size: 13px;
-  font-weight: 600;
-  color: #2e6f40;
+  font-weight: 650;
+  margin-top: 16px;
+}
+
+.mixedStatus svg {
+  font-size: 18px;
+  color: var(--m-green-600);
 }
 
 .emptyOutput {
@@ -410,13 +409,18 @@
   background: #fff;
   border: 1px solid rgba(15, 23, 42, 0.1);
   cursor: pointer;
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 750;
+  padding: 12px 28px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
   color: #0f172a;
   box-shadow: 0 4px 12px rgba(0,0,0,0.03);
   transition: all 0.2s ease;
+  min-width: 140px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .secondaryBtn:hover {
@@ -440,6 +444,8 @@
   font-weight: 800;
   box-shadow: 0 10px 24px rgba(0,0,0,0.15);
   transition: all 0.2s ease;
+  min-width: 140px;
+  justify-content: center;
 }
 
 .analyzeBtn:hover {
@@ -493,6 +499,8 @@
   background: rgba(46, 111, 64, 0.06);
   padding: 6px 14px;
   border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* Responsiveness */
@@ -540,10 +548,11 @@
   }
 
   .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     padding: 16px 20px;
+    gap: 12px;
   }
 
   .tabs {
@@ -560,7 +569,7 @@
   }
 
   .textarea, .outputArea {
-    font-size: 16px;
+    font-size: 14px;
     padding: 20px;
   }
 
@@ -570,20 +579,43 @@
     padding: 20px;
   }
 
-  .footerLeft, .footerRight {
+  .footerLeft {
     width: 100%;
     justify-content: space-between;
+    align-items: center;
+  }
+
+  .footerRight {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* Specific override for Output footer to stay in one row */
+  .card:last-child .footer {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card:last-child .footerRight {
+    width: auto;
   }
 
   .analyzeBtn {
-    width: 100%;
+    flex: 1;
     justify-content: center;
+    padding: 12px 16px;
+    white-space: nowrap;
   }
 
   .secondaryBtn {
     flex: 1;
     display: flex;
     justify-content: center;
+    padding: 12px 16px;
+    white-space: nowrap;
   }
   
   .diffItem {
@@ -595,6 +627,19 @@
   .diffMeta {
     width: 100%;
     justify-content: space-between;
+  }
+}
+
+@media (max-width: 560px) {
+  .appliedText {
+    display: none;
+  }
+  .textarea {
+    font-size: 14px;
+  }
+  
+  .actionBtn span {
+    display: none;
   }
 }
 

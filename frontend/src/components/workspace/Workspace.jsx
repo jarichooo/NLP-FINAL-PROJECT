@@ -5,36 +5,111 @@ import { RiCheckboxCircleFill } from 'react-icons/ri'
 import { HiOutlineTrash, HiOutlineSparkles } from 'react-icons/hi'
 import { MdContentCopy, MdHistory, MdCheckCircle, MdInfoOutline } from 'react-icons/md'
 import { IoGlobeOutline } from 'react-icons/io5'
+import { processText } from '../../services/api'
+
+// Example sentence loaded when user clicks "Load Example"
+// Edit this or add more in mock-server/db.json
+const EXAMPLE_INPUT = 'Kumain na ko kanina sa labas, tapos nagedit na rin ako ng docs. Di ko na sya mahanap kaya nag-message na lang ako sa kanya.'
 
 export default function Workspace() {
   const [inputText, setInputText] = useState('')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [showOutput, setShowOutput] = useState(false)
   const [activeTab, setActiveTab] = useState('corrected')
+  const [apiError, setApiError] = useState(null)
+
+  // API response state — mirrors the api.md schema
+  const [result, setResult] = useState(null)
+
   const textareaRef = useRef(null)
 
   const handleClear = () => {
     setInputText('')
     setShowOutput(false)
+    setResult(null)
+    setApiError(null)
   }
 
   const handleLoadExample = () => {
-    setInputText('Kumain na ko kanina sa labas, tapos nagedit na rin ako ng docs. Di ko na sya mahanap kaya nag-message na lang ako sa kanya.')
+    setInputText(EXAMPLE_INPUT)
   }
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!inputText.trim()) return
     setIsAnalyzing(true)
     setShowOutput(false)
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsAnalyzing(false)
+    setResult(null)
+    setApiError(null)
+
+    try {
+      // Calls src/services/api.js → mock-server or real Flask backend
+      const data = await processText(inputText)
+      setResult(data)
       setShowOutput(true)
-    }, 1800)
+    } catch (err) {
+      const isNetworkError =
+        err.code === 'ERR_NETWORK' ||
+        err.code === 'ECONNREFUSED' ||
+        err.message === 'Network Error'
+
+      setApiError(
+        err.response?.data?.error ||
+        (isNetworkError
+          ? 'Cannot connect to server. Run: node mock-server/server.cjs'
+          : 'An error occurred. Please try again.')
+      )
+    } finally {
+      setIsAnalyzing(false)
+    }
+  }
+
+  const handleCopy = () => {
+    if (result?.corrected) {
+      navigator.clipboard.writeText(result.corrected)
+    }
   }
 
   const charCount = inputText.length
+
+  /**
+   * Renders the corrected output with highlighted correction spans.
+   * detected_errors contains { original, corrected } pairs used to mark changed words.
+   */
+  const renderCorrectedText = () => {
+    if (!result) return null
+
+    let text = result.corrected
+    const parts = []
+    let lastIndex = 0
+
+    // Build sorted list of corrections to highlight
+    const highlights = [...(result.detected_errors || [])].sort((a, b) => a.position - b.position)
+
+    for (const err of highlights) {
+      const idx = text.indexOf(err.corrected, lastIndex)
+      if (idx === -1) continue
+
+      // Text before correction
+      if (idx > lastIndex) {
+        parts.push(<span key={`plain-${lastIndex}`}>{text.slice(lastIndex, idx)}</span>)
+      }
+
+      // Highlighted corrected word
+      parts.push(
+        <span key={`corr-${idx}`} className={styles.correction}>
+          {err.corrected}
+        </span>
+      )
+      lastIndex = idx + err.corrected.length
+    }
+
+    // Remaining text
+    if (lastIndex < text.length) {
+      parts.push(<span key="tail">{text.slice(lastIndex)}</span>)
+    }
+
+    return parts.length > 0 ? parts : text
+  }
 
   return (
     <section id="workspace" className={styles.section}>
@@ -89,18 +164,18 @@ export default function Workspace() {
             <div className={styles.footer}>
               <div className={styles.footerLeft}>
                 <span className={styles.stat}>{charCount} chars</span>
+                <button className={styles.actionBtn} onClick={handleLoadExample}>
+                  <HiOutlineSparkles />
+                  <span>Load Example</span>
+                </button>
+              </div>
+              <div className={styles.footerRight}>
                 {inputText && (
-                  <button className={styles.actionBtn} onClick={handleClear}>
+                  <button className={styles.secondaryBtn} onClick={handleClear}>
                     <HiOutlineTrash />
                     <span>Clear</span>
                   </button>
                 )}
-              </div>
-              <div className={styles.footerRight}>
-                <button className={styles.secondaryBtn} onClick={handleLoadExample}>
-                  <HiOutlineSparkles />
-                  <span>Load Example</span>
-                </button>
                 <button 
                   className={styles.analyzeBtn} 
                   onClick={handleAnalyze}
@@ -129,11 +204,11 @@ export default function Workspace() {
                   onClick={() => setActiveTab('changed')}
                 >
                   <MdHistory className={styles.tabIcon} />
-                  <span>What Changed</span>
+                  <span>Changed</span>
                 </button>
               </div>
               {showOutput && (
-                <button className={styles.copyBtn}>
+                <button className={styles.copyBtn} onClick={handleCopy}>
                   <MdContentCopy />
                   <span>Copy</span>
                 </button>
@@ -150,6 +225,12 @@ export default function Workspace() {
                   </div>
                   <div className={styles.loadingText}>Analyzing Text...</div>
                 </div>
+              ) : apiError ? (
+                <div className={styles.emptyOutput}>
+                  <IoGlobeOutline className={styles.emptyIcon} />
+                  <div className={styles.emptyText}>Connection Error</div>
+                  <div className={styles.emptySubtext}>{apiError}</div>
+                </div>
               ) : !showOutput ? (
                 <div className={styles.emptyOutput}>
                   <IoGlobeOutline className={styles.emptyIcon} />
@@ -160,8 +241,7 @@ export default function Workspace() {
                 <div className={styles.outputArea}>
                   {activeTab === 'corrected' ? (
                     <>
-                      Kumain na <span className={styles.correction}>ako</span> kanina sa labas, tapos <span className={styles.correction}>ako ang nagedit</span> na rin ng docs. <span className={styles.correction}>Hindi</span> ko na <span className={styles.correction}>siya</span> mahanap kaya nag-message na lang ako sa kanya.
-                      
+                      {renderCorrectedText()}
                       <div className={styles.correctionHint}>
                         <MdInfoOutline />
                         <span>Tap any green word to see why it was corrected</span>
@@ -169,29 +249,29 @@ export default function Workspace() {
                     </>
                   ) : (
                     <div className={styles.diffList}>
-                      {[
-                        { old: 'ko', new: 'ako', cat: 'Pronoun Normalization' },
-                        { old: 'nagedit ako', new: 'ako ang nagedit', cat: 'Word Order Correction' },
-                        { old: 'Di', new: 'Hindi', cat: 'Informal Negation' },
-                        { old: 'sya', new: 'siya', cat: 'Orthographic Correction' },
-                      ].map((item, i) => (
+                      {(result?.detected_errors || []).map((item, i) => (
                         <div key={i} className={styles.diffItem}>
                           <div className={styles.diffMain}>
-                            <span className={styles.oldVal}>{item.old}</span>
+                            <span className={styles.oldVal}>{item.original}</span>
                             <span className={styles.diffArrow}>&gt;</span>
-                            <span className={styles.newVal}>{item.new}</span>
+                            <span className={styles.newVal}>{item.corrected}</span>
                           </div>
                           <div className={styles.diffMeta}>
-                            <span className={styles.category}>{item.cat}</span>
-                            <span className={styles.inspect}>Inspect →</span>
+                            <span className={styles.category}>{item.category}</span>
                           </div>
                         </div>
                       ))}
                       
-                      <div className={styles.mixedStatus}>
-                        <RiCheckboxCircleFill />
-                        <span>2 mixed-language words kept as-is (nag-message, docs)</span>
-                      </div>
+                      {(result?.mixed_kept || []).length > 0 && (
+                        <div className={styles.mixedStatus}>
+                          <RiCheckboxCircleFill size={20} />
+                          <span>
+                            {result.mixed_kept.length} mixed-language{' '}
+                            {result.mixed_kept.length === 1 ? 'word' : 'words'} kept as-is (
+                            {result.mixed_kept.join(', ')})
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -201,14 +281,16 @@ export default function Workspace() {
             <div className={styles.footer}>
               <div className={styles.footerLeft}>
                 <span className={styles.stat}>
-                  {!showOutput ? 'Waiting for your text' : '4 corrections applied'}
+                  {!showOutput ? 'Waiting for your text' : (
+                    <>{result?.detected_errors?.length ?? 0} corrections <span className={styles.appliedText}>applied</span></>
+                  )}
                 </span>
               </div>
               {showOutput && (
                 <div className={styles.footerRight}>
                   <div className={styles.analysisStatus}>
                     <RiCheckboxCircleFill />
-                    <span>Analysis Complete</span>
+                    <span className={styles.statusText}>Analysis Complete</span>
                   </div>
                 </div>
               )}

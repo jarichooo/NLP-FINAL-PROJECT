@@ -1,7 +1,7 @@
 .wrap {
   max-width: 1500px;
   margin: 0 auto;
-  padding: 58px 24px 70px;
+  padding: 100px 24px 70px;
 }
 
 .grid {
@@ -87,7 +87,7 @@
   appearance: none;
   border: 0;
   cursor: pointer;
-  padding: 16px 22px;
+  padding: 16px 32px;
   border-radius: 14px;
   background: linear-gradient(180deg, var(--m-green-700), var(--m-green-900));
   color: #fff;
@@ -133,7 +133,7 @@
 .secondary {
   appearance: none;
   cursor: pointer;
-  padding: 16px 18px;
+  padding: 16px 28px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid rgba(15, 23, 42, 0.18);
@@ -253,7 +253,7 @@
 
 @media (max-width: 1023px) {
   .wrap {
-    padding: 40px 24px 60px;
+    padding: 80px 24px 60px;
   }
 
   .grid {
@@ -325,7 +325,7 @@
 
 @media (max-width: 768px) {
   .wrap {
-    padding: 34px 18px 48px;
+    padding: 80px 18px 48px;
   }
 
   .pill {
@@ -344,7 +344,7 @@
   }
 
   .stats {
-    margin-top: 72px;
+    margin-top: 56px;
     gap: 64px;
   }
 
@@ -365,7 +365,7 @@
 
 @media (max-width: 560px) {
   .wrap {
-    padding: 28px 16px 40px;
+    padding: 70px 16px 40px;
   }
 
   .pill {
@@ -405,17 +405,16 @@
 
   .primary,
   .secondary {
-    width: auto;
-    min-width: 240px;
-    max-width: 80%;
+    width: 80%;
+    max-width: 100%;
     justify-content: center;
     padding: 14px 18px;
   }
 
   .stats {
     gap: 48px;
-    margin-top: 64px;
-    padding-top: 24px;
+    margin-top: 48px;
+    padding-top: 20px;
   }
 
   .statValue {

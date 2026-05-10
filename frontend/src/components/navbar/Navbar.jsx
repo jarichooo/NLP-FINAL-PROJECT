@@ -81,6 +81,12 @@ export default function Navbar({ route, onRouteChange, onScrollToWorkspace }) {
           </button>
         </div>
       </div>
+
+      <div 
+        className={open ? styles.backdropOpen : styles.backdrop} 
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
     </header>
   )
 }
