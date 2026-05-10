@@ -381,6 +381,12 @@
   font-size: 13px;
   font-weight: 600;
   color: rgba(15, 23, 42, 0.4);
+  transition: color 0.2s ease;
+}
+
+.statOver {
+  color: #ef4444 !important;
+  font-weight: 700;
 }
 
 .actionBtn {
@@ -455,10 +461,29 @@
 }
 
 .analyzeBtn:disabled {
-  background: #ccc;
+  background: rgba(15, 23, 42, 0.12);
+  color: rgba(15, 23, 42, 0.35);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+/* Cooldown/rate-limited state — light grey */
+.analyzeBtnCooldown {
+  background: #f1f5f9 !important;
+  color: rgba(15, 23, 42, 0.5) !important;
+  border: 1px solid rgba(15, 23, 42, 0.05) !important;
+  box-shadow: none !important;
+}
+
+.analyzeBtnCooldown:disabled {
+  background: #f1f5f9 !important;
+  color: rgba(15, 23, 42, 0.45) !important;
+  cursor: not-allowed;
+}
+
+.analyzeBtnCooldown .timerIcon {
+  color: rgba(15, 23, 42, 0.45) !important;
 }
 
 .analyzeDot {
@@ -466,6 +491,14 @@
   height: 8px;
   border-radius: 50%;
   background: #22c55e;
+}
+
+.timerIcon {
+  font-size: 18px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .copyBtn {

@@ -3,9 +3,10 @@ import { motion } from 'framer-motion'
 import styles from './Workspace.module.css'
 import { RiCheckboxCircleFill } from 'react-icons/ri'
 import { HiOutlineTrash, HiOutlineSparkles } from 'react-icons/hi'
-import { MdContentCopy, MdHistory, MdCheckCircle, MdInfoOutline } from 'react-icons/md'
+import { MdContentCopy, MdHistory, MdCheckCircle, MdInfoOutline, MdTimer } from 'react-icons/md'
 import { IoGlobeOutline } from 'react-icons/io5'
 import { processText } from '../../services/api'
+import { useRateLimit, formatCooldown } from '../../hooks/useRateLimit'
 
 // Example sentence loaded when user clicks "Load Example"
 // Edit this or add more in mock-server/db.json
@@ -23,11 +24,23 @@ export default function Workspace() {
 
   const textareaRef = useRef(null)
 
+  // Rate limiting — see src/hooks/useRateLimit.js for rules
+  const {
+    analysisCount,
+    isInputLimited,
+    isSessionLimited,
+    isLimited,
+    cooldownSecs,
+    recordAnalysis,
+    resetInput,
+  } = useRateLimit()
+
   const handleClear = () => {
     setInputText('')
     setShowOutput(false)
     setResult(null)
     setApiError(null)
+    resetInput()  // resets per-input counter; session window stays
   }
 
   const handleLoadExample = () => {
@@ -35,7 +48,11 @@ export default function Workspace() {
   }
 
   const handleAnalyze = async () => {
-    if (!inputText.trim()) return
+    if (!inputText.trim() || isLimited) return
+
+    // Every click now counts towards the rolling session window (max 9 per 2 min)
+    recordAnalysis()
+
     setIsAnalyzing(true)
     setShowOutput(false)
     setResult(null)
@@ -63,13 +80,27 @@ export default function Workspace() {
     }
   }
 
+  // Derive button label and indicator based on rate limit state
+  const btnLabel = isLimited
+    ? `Wait ${formatCooldown(cooldownSecs)}`
+    : showOutput
+    ? 'Analyze Again'
+    : isAnalyzing
+    ? 'Analyzing...'
+    : 'Analyze'
+
+  // Word count + 2500 word limit
+  const MAX_WORDS = 2500
+  const wordCount = inputText.trim() === '' ? 0 : inputText.trim().split(/\s+/).length
+  const isOverWordLimit = wordCount > MAX_WORDS
+
+  const btnDisabled = isAnalyzing || !inputText.trim() || isLimited || isOverWordLimit
+
   const handleCopy = () => {
     if (result?.corrected) {
       navigator.clipboard.writeText(result.corrected)
     }
   }
-
-  const charCount = inputText.length
 
   /**
    * Renders the corrected output with highlighted correction spans.
@@ -163,7 +194,9 @@ export default function Workspace() {
 
             <div className={styles.footer}>
               <div className={styles.footerLeft}>
-                <span className={styles.stat}>{charCount} chars</span>
+                <span className={`${styles.stat} ${isOverWordLimit ? styles.statOver : ''}`}>
+                  {wordCount.toLocaleString()} / {MAX_WORDS.toLocaleString()} words
+                </span>
                 <button className={styles.actionBtn} onClick={handleLoadExample}>
                   <HiOutlineSparkles />
                   <span>Load Example</span>
@@ -177,12 +210,16 @@ export default function Workspace() {
                   </button>
                 )}
                 <button 
-                  className={styles.analyzeBtn} 
+                  className={`${styles.analyzeBtn} ${isLimited ? styles.analyzeBtnCooldown : ''}`}
                   onClick={handleAnalyze}
-                  disabled={isAnalyzing || !inputText.trim()}
+                  disabled={btnDisabled}
+                  title={isOverWordLimit ? `Text exceeds ${MAX_WORDS} word limit` : undefined}
                 >
-                  <div className={styles.analyzeDot} />
-                  <span>{isAnalyzing ? 'Analyzing...' : 'Analyze'}</span>
+                  {isLimited
+                    ? <MdTimer className={styles.timerIcon} />
+                    : <div className={styles.analyzeDot} />
+                  }
+                  <span>{btnLabel}</span>
                 </button>
               </div>
             </div>

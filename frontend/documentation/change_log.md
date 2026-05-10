@@ -76,3 +76,7 @@
 - Fixed mobile Workspace footer: restored 'Analysis Complete' and correction count visibility, hiding only the word 'applied' on small screens.
 - Created mock-server/ with server.js and db.json to simulate Flask /api/process endpoint; extracted API calls to src/services/api.js; removed all dummy data from Workspace.jsx.
 - Stabilized Workspace card header: set a fixed min-height of 70px to prevent layout shifting when the 'Taglish Detected' badge appears.
+- Added client-side rate limiting (useRateLimit hook): max 3 analyses per input, max 3 inputs per 2-min rolling window. Analyze button shows cooldown timer when session-limited. Backend requirements documented in mock-server/README.md.
+- Enhanced rate limiting: session window now persists in localStorage (survives page refresh).
+- Upgraded Workspace metrics: switched from character count to word count with a 2500-word limit.
+- UI Polish: fixed timer icon visibility and added red highlighting for over-limit word counts.
