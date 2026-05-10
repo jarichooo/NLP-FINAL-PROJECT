@@ -1,0 +1,82 @@
+# Changelog
+
+## [0.0.1] - Initial Setup
+
+- Initialized React (Vite) + Tailwind CSS.
+- Defined Folder Structure.
+- Implemented Design System colors.
+
+## [Unreleased]
+
+- Implemented Home hero section + navbar with a clean `components/` + `pages/` structure and CSS modules.
+- Added hero background blob + dot grid decorations, rule chip icons, widened layout to 1500px, and loaded Inter font.
+- Replaced hero CTAs and feature bullets with proper SVG icons, improved button hover/press/focus interactions, and scaled up the hero graphic.
+- Updated hero feature checkmarks to solid `#084619` circles with white checks to match the target UI.
+- Switched hero action/icons from inline SVGs to `react-icons` (Ionicons community set) and added `react-icons` to frontend deps.
+- Migrated icon usage to Ionic’s `IonIcon` + `ionicons/icons` (removed inline SVG + removed `react-icons` dependency).
+- Reverted icon rendering to dependency-free unicode glyphs to restore UI rendering without installing new icon packages.
+- Re-added `react-icons` and wired Hero icons (book/arrow/check-circle) plus a slide-up/pop-in entrance animation on the hero content (using `react-icons/fa` to avoid missing `fa6` subpath).
+- Fixed hero feature check icon styling by rendering `RiCheckboxCircleFill` directly and setting it to `#084619` so it’s visible.
+- Removed hover `scale()`/brightness filter on hero buttons to prevent blurred text while keeping a crisp hover lift + color change.
+- Slowed down hero entrance animations and applied the same crisp hover/press/focus behavior to the navbar “Go to Workspace” button.
+- Updated the hero graphic example text (before/after + stats) and centered the “SYMMETRY · Live Correction” pill.
+- Adjusted hero graphic token highlighting so specific words/phrases are grouped and marked exactly as in the target (before vs after).
+- Made navbar responsive under 768px with a hamburger menu that drops links below the header, adds smoother transitions, and uses bold green active styling without underline.
+- Refined the mobile navbar UX: long hamburger/close glyphs without button boxes, an overlay menu that doesn’t shift page content, and a dimmed black backdrop (20%) while open.
+- Moved the mobile-menu backdrop to cover only the page area (below the sticky navbar) and kept the “Morphism.” brand text visible on mobile.
+- Removed the mobile menu’s translucent/blur background so it renders as solid white (no gray haze behind the links).
+- Removed the mobile menu backdrop entirely and removed the divider line between the header and expanded mobile menu.
+- Matched the open navbar + menu panel backgrounds (no seam) and improved hamburger/X micro-interactions with subtle hover/press transforms without adding visible button chrome.
+- Removed hover/press transforms from the hamburger/X and added a clean `:focus-visible` ring to avoid the default blue focus highlight.
+- Improved hero-section responsiveness across breakpoints and centered left-side content when the layout stacks with the hero graphic below.
+- Tightened hero mobile responsiveness: stats stay in one row, feature checks stay inline/aligned while centered, text and pill scale down by breakpoint, and horizontal margins are preserved on all screen sizes.
+- Fixed navbar height for mobile (<=560px) and refined hero section responsiveness with better margins, typography, and graphic scaling.
+- Moved hero stacking breakpoint to 1023px, fixed uneven margins, shortened mobile CTA buttons, and scaled down hero graphic internal elements for better fitting.
+- Aligned feature list typography with subtitle, forced metrics into a single row, prevented text wrapping in graphic chips/pills, and expanded graphic height to prevent content clipping.
+- Centered metrics, increased gap between metrics and hero graphic, expanded graphic height further to avoid tag overlap, and removed live pill background on mobile.
+- Refined metrics centering using flexbox and reduced vertical spacing between metrics and hero graphic for a tighter layout.
+- Finalized metrics centering by forcing 100% width on parent containers and eliminating all potential side margin/padding offsets.
+- Reverted the full-width metrics row; restored the section border-top within the left hero column and adjusted desktop title font-size/grid-ratio to ensure a clean two-line wrap.
+- Implemented the Workspace (Editor) as a section on the Home page with a premium split-card layout (Input vs. Corrected).
+- Removed the separate `WorkspacePage` and updated Navbar/Hero CTAs to trigger smooth scrolling to the Workspace section.
+- Added mock interactive behavior for the editor: character counting, "Analyze" simulation, example loading, and highlighted correction previews.
+- Populated What Changed tab in Workspace with a detailed correction list, category badges, and mixed-language status bar.
+- Restored original text flow for Corrected tab by removing flex layout from output container.
+- Added a pulse loading animation in the Workspace output card when analysis is in progress.
+- Added scroll-triggered entrance animations for the Workspace section using Framer Motion.
+- Implemented Workspace section header with Taglish Correction Workspace title and descriptive caption.
+- Installed framer-motion dependency to fix import resolution error in Workspace component.
+- Shortened the Workspace section caption for better readability.
+- Comprehensive responsiveness update for Workspace: optimized font scaling, grid stacking, and mobile-friendly UI controls (tabs, footers, and action buttons).
+- Fixed active tab visibility by ensuring high specificity and priority for active state styles.
+- Standardized animations in HeroSection using Framer Motion with a staggered part-by-part entry effect and consistent 0.8s durations.
+- Optimized Workspace mobile responsiveness by ensuring headers/footers stay in single rows and balancing the Clear/Analyze button sizing.
+- Refined Hero section spacing and CTA button widths; standardized Workspace button sizes and adjusted editor font sizes for better density.
+- Further reduced editor and output font sizes to 14px on mobile for better text fitting.
+- Set Hero CTA buttons to 90% width on small mobile screens for better visual balance.
+- Completely overhauled HeroGraphic with dynamic sample cycling, fast typing animations, and delayed error highlighting for a more realistic demo.
+- Updated HeroGraphic with two rotating samples: a perfect sentence and an error-filled sentence with fast typing animations and delayed error highlighting.
+- Accelerated HeroGraphic typing (1s) and cycling (9s) animations; repositioned Noun tag and removed footer arrow icon.
+- Refined Noun tag placement to avoid text overlap on desktop while maintaining precise positioning between sections on mobile.
+- Reduced typing animation speed to 1 second; repositioned Noun tag and removed footer arrow for mobile screens in HeroGraphic.
+- Reverted inline Noun tag and restored its floating position; adjusted its mobile coordinates to bottom: 24%, left: 0% as requested.
+- Modified HeroGraphic to display corrected text and highlights as soon as analysis starts (progress > 0), rather than waiting for 100% completion.
+- Removed the check icon from the HeroGraphic footer and delayed the appearance of the correction status until analysis is 100% complete.
+- Synchronized footer status visibility with the AFTER text release and restored the green progress bar color logic with a solid fallback.
+- Fully refactored HeroGraphic animation to use a synchronized CSS-driven loading bar and percentage counter, ensuring the AFTER text and footer reveal instantly as the bar starts sliding.
+- Restored delayed reveal of correction results; the AFTER text and footer status now only appear once the analysis loading is 100% complete.
+- Restored the active link underline in the Navbar and increased navigation spacing to 32px to prevent layout shifts during route transitions.
+- Removed active link underline from the mobile collapsed menu for a cleaner mobile interface.
+- Enlarged the Navbar for desktop: increased height to 88px, logo size to 42px, and font sizes to 17px/24px for better visibility.
+- Scaled down Navbar content for mobile devices: reduced logo to 28px and brand name to 17px at the smallest breakpoint for a compact collapsed state.
+- Added a semi-transparent black backdrop (0.5 opacity) that appears when the mobile menu is open, dimming the page content below.
+- Tightened Hero section layout on mobile: reduced margin between CTA buttons and metrics to 48px/56px.
+- Workspace Refinements: Enlarged check icons to 18px/20px, removed 'Inspect' links from the Changed tab, and hid the word 'applied' on small mobile screens for a cleaner footer.
+- Workspace cleanup: removed 'Inspect' links, increased check icon size for mixed-language status, and matched 'Changed' tab font sizes to 14px. Hidden 'applied' correction count on mobile.
+- Fixed mobile Workspace footer: restored 'Analysis Complete' and correction count visibility, hiding only the word 'applied' on small screens.
+- Created mock-server/ with server.js and db.json to simulate Flask /api/process endpoint; extracted API calls to src/services/api.js; removed all dummy data from Workspace.jsx.
+- Stabilized Workspace card header: set a fixed min-height of 70px to prevent layout shifting when the 'Taglish Detected' badge appears.
+- Added client-side rate limiting (useRateLimit hook): max 3 analyses per input, max 3 inputs per 2-min rolling window. Analyze button shows cooldown timer when session-limited. Backend requirements documented in mock-server/README.md.
+- Enhanced rate limiting: session window now persists in localStorage (survives page refresh).
+- Upgraded Workspace metrics: switched from character count to word count with a 2500-word limit.
+- UI Polish: fixed timer icon visibility and added red highlighting for over-limit word counts.
