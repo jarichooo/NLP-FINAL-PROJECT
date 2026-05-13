@@ -1,0 +1,29 @@
+================================================================================
+TAGLISH GRAMMAR CORRECTION REPORT
+================================================================================
+
+Example 1:
+  Input:  wala naman masama pero may problem
+  Output: Wala naman, masama pero may problema.
+  Status: ✓ Improved
+
+Example 2:
+  Input:  bakit ang dumb mo kase
+  Output: Bakit ang dumb mo kasi?
+  Status: ✓ Improved
+
+Example 3:
+  Input:  I mean ang brand image ay shaking na talaga
+  Output: I mean, ang brand image ay shaking na talaga.
+  Status: ✓ Improved
+
+Example 4:
+  Input:  ayoko na magwash ng plato
+  Output: Ayoko na mag-wash ng plato.
+  Status: ✓ Improved
+
+Example 5:
+  Input:  kumusta ka na ba doon
+  Output: Kumusta ka na ba doon?
+  Status: ✓ Improved
+

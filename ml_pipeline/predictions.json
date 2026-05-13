@@ -1,0 +1,27 @@
+[
+  {
+    "input": "wala naman masama pero may problem",
+    "output": "Wala naman, masama pero may problema.",
+    "timestamp": "2026-05-13 00:22:19.033587"
+  },
+  {
+    "input": "bakit ang dumb mo kase",
+    "output": "Bakit ang dumb mo kasi?",
+    "timestamp": "2026-05-13 00:22:24.665325"
+  },
+  {
+    "input": "I mean ang brand image ay shaking na talaga",
+    "output": "I mean, ang brand image ay shaking na talaga.",
+    "timestamp": "2026-05-13 00:22:29.072454"
+  },
+  {
+    "input": "ayoko na magwash ng plato",
+    "output": "Ayoko na magwash ng plato.",
+    "timestamp": "2026-05-13 00:22:34.026603"
+  },
+  {
+    "input": "kumusta ka na ba doon",
+    "output": "Kumusta ka na ba doon?",
+    "timestamp": "2026-05-13 00:22:34.512311"
+  }
+]
