@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import styles from "./Workspace.module.css";
 import { RiCheckboxCircleFill } from "react-icons/ri";
@@ -25,6 +25,7 @@ export default function Workspace() {
   const [showOutput, setShowOutput] = useState(false);
   const [activeTab, setActiveTab] = useState("corrected");
   const [apiError, setApiError] = useState(null);
+  const [analyzedText, setAnalyzedText] = useState("");
 
   // API response state — mirrors the api.md schema
   const [result, setResult] = useState(null);
@@ -47,6 +48,7 @@ export default function Workspace() {
     setShowOutput(false);
     setResult(null);
     setApiError(null);
+    setAnalyzedText("");
     resetInput(); // resets per-input counter; session window stays
   };
 
@@ -60,6 +62,7 @@ export default function Workspace() {
     setShowOutput(false);
     setResult(null);
     setApiError(null);
+    setAnalyzedText(inputText);
 
     try {
       // Calls src/services/api.js → mock-server or real Flask backend
@@ -114,48 +117,183 @@ export default function Workspace() {
     }
   };
 
-  /**
-   * Renders the corrected output with highlighted correction spans.
-   * detected_errors contains { original, corrected } pairs used to mark changed words.
-   */
-  const renderCorrectedText = () => {
-    if (!result) return null;
+  const getWords = (text) => {
+    const trimmed = text.trim();
+    return trimmed === "" ? [] : trimmed.split(/\s+/);
+  };
 
-    let text = result.corrected;
-    const parts = [];
-    let lastIndex = 0;
+  const normalizeToken = (token) => token.replace(/^'+/, "").toLowerCase();
 
-    // Build sorted list of corrections to highlight
-    const highlights = [...(result.detected_errors || [])].sort(
-      (a, b) => a.position - b.position,
-    );
+  const computeDiff = (original, corrected) => {
+    const originalWords = getWords(original);
+    const correctedWords = getWords(corrected);
+    const originalNorm = originalWords.map(normalizeToken);
+    const correctedNorm = correctedWords.map(normalizeToken);
+    const n = originalWords.length;
+    const m = correctedWords.length;
 
-    for (const err of highlights) {
-      const idx = text.indexOf(err.corrected, lastIndex);
-      if (idx === -1) continue;
+    const dp = Array.from({ length: n + 1 }, () => Array(m + 1).fill(0));
 
-      // Text before correction
-      if (idx > lastIndex) {
-        parts.push(
-          <span key={`plain-${lastIndex}`}>{text.slice(lastIndex, idx)}</span>,
-        );
+    for (let i = n - 1; i >= 0; i -= 1) {
+      for (let j = m - 1; j >= 0; j -= 1) {
+        dp[i][j] =
+          originalNorm[i] === correctedNorm[j]
+            ? dp[i + 1][j + 1] + 1
+            : Math.max(dp[i + 1][j], dp[i][j + 1]);
       }
+    }
 
-      // Highlighted corrected word
+    const changes = [];
+    const wordChangeIds = Array(m).fill(null);
+    let changeId = 0;
+    let current = { originalWords: [], correctedWords: [], indices: [] };
+
+    const flush = () => {
+      if (
+        current.originalWords.length > 0 ||
+        current.correctedWords.length > 0
+      ) {
+        changes.push({
+          original: current.originalWords.join(" "),
+          corrected: current.correctedWords.join(" "),
+          category: "Correction",
+        });
+        current.indices.forEach((idx) => {
+          wordChangeIds[idx] = changeId;
+        });
+        changeId += 1;
+      }
+      current = { originalWords: [], correctedWords: [], indices: [] };
+    };
+
+    let i = 0;
+    let j = 0;
+
+    while (i < n && j < m) {
+      if (originalNorm[i] === correctedNorm[j]) {
+        flush();
+
+        if (originalWords[i] !== correctedWords[j]) {
+          changes.push({
+            original: originalWords[i],
+            corrected: correctedWords[j],
+            category: "Correction",
+          });
+          wordChangeIds[j] = changeId;
+          changeId += 1;
+        }
+
+        i += 1;
+        j += 1;
+      } else if (dp[i + 1][j] >= dp[i][j + 1]) {
+        current.originalWords.push(originalWords[i]);
+        i += 1;
+      } else {
+        current.correctedWords.push(correctedWords[j]);
+        current.indices.push(j);
+        j += 1;
+      }
+    }
+
+    while (i < n) {
+      current.originalWords.push(originalWords[i]);
+      i += 1;
+    }
+
+    while (j < m) {
+      current.correctedWords.push(correctedWords[j]);
+      current.indices.push(j);
+      j += 1;
+    }
+
+    flush();
+
+    return { wordChangeIds, changes };
+  };
+
+  const diffData = useMemo(() => {
+    if (!result?.corrected) {
+      return { wordChangeIds: [], changes: [] };
+    }
+
+    const baseOriginal = result.original || analyzedText || inputText;
+    return computeDiff(baseOriginal, result.corrected);
+  }, [analyzedText, inputText, result]);
+
+  const renderCorrectedText = () => {
+    if (!result?.corrected) return null;
+
+    const parts = [];
+    const tokens = result.corrected.split(/(\s+)/);
+    let wordIndex = 0;
+    let highlightBuffer = [];
+    let activeChangeId = null;
+    let pendingSpace = "";
+
+    const flushHighlight = () => {
+      if (highlightBuffer.length === 0) return;
       parts.push(
-        <span key={`corr-${idx}`} className={styles.correction}>
-          {err.corrected}
+        <span key={`corr-${parts.length}`} className={styles.correction}>
+          {highlightBuffer.join("")}
         </span>,
       );
-      lastIndex = idx + err.corrected.length;
-    }
+      highlightBuffer = [];
+      activeChangeId = null;
+    };
 
-    // Remaining text
-    if (lastIndex < text.length) {
-      parts.push(<span key="tail">{text.slice(lastIndex)}</span>);
-    }
+    tokens.forEach((token) => {
+      if (token.trim() === "") {
+        pendingSpace = token;
+        return;
+      }
 
-    return parts.length > 0 ? parts : text;
+      const changeId = diffData.wordChangeIds[wordIndex] ?? null;
+      wordIndex += 1;
+
+      if (changeId === null) {
+        flushHighlight();
+        if (pendingSpace) {
+          parts.push(pendingSpace);
+          pendingSpace = "";
+        }
+        parts.push(token);
+        return;
+      }
+
+      if (activeChangeId === null) {
+        flushHighlight();
+        if (pendingSpace) {
+          parts.push(pendingSpace);
+          pendingSpace = "";
+        }
+        activeChangeId = changeId;
+        highlightBuffer.push(token);
+        return;
+      }
+
+      if (activeChangeId === changeId) {
+        if (pendingSpace) {
+          highlightBuffer.push(pendingSpace);
+          pendingSpace = "";
+        }
+        highlightBuffer.push(token);
+        return;
+      }
+
+      flushHighlight();
+      if (pendingSpace) {
+        parts.push(pendingSpace);
+        pendingSpace = "";
+      }
+      activeChangeId = changeId;
+      highlightBuffer.push(token);
+    });
+
+    flushHighlight();
+    if (pendingSpace) {
+      parts.push(pendingSpace);
+    }
+    return parts;
   };
 
   return (
@@ -313,7 +451,7 @@ export default function Workspace() {
                     </>
                   ) : (
                     <div className={styles.diffList}>
-                      {(result?.detected_errors || []).map((item, i) => (
+                      {diffData.changes.map((item, i) => (
                         <div key={i} className={styles.diffItem}>
                           <div className={styles.diffMain}>
                             <span className={styles.oldVal}>
@@ -355,7 +493,7 @@ export default function Workspace() {
                     "Waiting for your text"
                   ) : (
                     <>
-                      {result?.detected_errors?.length ?? 0} corrections{" "}
+                      {diffData.changes.length} corrections{" "}
                       <span className={styles.appliedText}>applied</span>
                     </>
                   )}

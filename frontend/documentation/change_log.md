@@ -90,3 +90,8 @@
 - Filtered out unchanged items so only real corrections are highlighted.
 - Removed the Load Example button and reset rate-limit state when the cooldown window clears.
 - Kept case-only corrections so highlights match corrected words.
+- Derived highlights and Changed list from a word-diff of original vs corrected text for accurate multi-word fixes.
+- Grouped consecutive corrected words into a single highlight span.
+- Aligned corrections using normalized tokens to avoid merging unrelated fixes.
+- Highlighted corrected output by change group to prevent separate fixes from merging.
+- Preserved visible spacing between separate highlight groups while keeping multi-word highlights intact.
