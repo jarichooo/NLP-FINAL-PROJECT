@@ -57,18 +57,18 @@ export async function processText(text) {
 
   const detectedErrors = changed
     .map((item) => {
-    const corrected = item.corrected || "";
-    const original = item.original || "";
-    const position = corrected
-      ? correctedText.toLowerCase().indexOf(corrected.toLowerCase())
-      : -1;
+      const corrected = item.corrected || "";
+      const original = item.original || "";
+      const position = corrected
+        ? correctedText.toLowerCase().indexOf(corrected.toLowerCase())
+        : -1;
 
-    return {
-      original,
-      corrected,
-      category: item.category || "Correction",
-      position: position < 0 ? 0 : position,
-    };
+      return {
+        original,
+        corrected,
+        category: item.category || "Correction",
+        position: position < 0 ? 0 : position,
+      };
     })
     .filter((item) => {
       const original = item.original.trim();
