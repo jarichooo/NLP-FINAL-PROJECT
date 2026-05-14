@@ -1,6 +1,6 @@
 # API Endpoints (Flask Connection)
 
-- Base URL: `http://localhost:5000` (real Flask)
+- Base URL: `https://jarichooo-morphism.hf.space` (hosted backend)
 - Mock URL: `http://localhost:5001` (mock server — run `node mock-server/server.js`)
 - POST `/api/process`:
   - Request: `{ "text": string }`

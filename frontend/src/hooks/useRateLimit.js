@@ -76,7 +76,13 @@ export function useRateLimit() {
         const secs = computeCooldown()
         setCooldownSecs(secs)
         if (secs <= 0) {
-          setWindowTimestamps(prev => getActive(prev))
+          setWindowTimestamps(prev => {
+            const next = getActive(prev)
+            if (next.length === 0) {
+              setAnalysisCount(0)
+            }
+            return next
+          })
         }
       }
       tick()
