@@ -6,7 +6,7 @@
  * change BASE_URL to your production URL.
  *
  * Mock server:  http://localhost:5001  (run: node mock-server/server.js)
- * Real backend: http://localhost:5000  (your Flask server)
+ * Hosted backend: https://jarichooo-morphism.hf.space
  *
  * API contract from documentation/api.md:
  *   POST /api/process
@@ -14,15 +14,14 @@
  *   Response: { corrected: string, detected_errors: [], latency: float, accuracy: float }
  */
 
-import axios from 'axios';
+import axios from "axios";
 
-// ── Swap this URL to point to the real Flask server when ready ──
-const BASE_URL = 'http://localhost:5001';
+const BASE_URL = "https://jarichooo-morphism.hf.space";
 
 const client = axios.create({
   baseURL: BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
-  timeout: 15000,
+  headers: { "Content-Type": "application/json" },
+  timeout: 120000,
 });
 
 /**
@@ -37,6 +36,51 @@ const client = axios.create({
  * }>}
  */
 export async function processText(text) {
-  const response = await client.post('/api/process', { text });
-  return response.data;
+  const response = await client.post("/api/process", { text });
+  const data = response.data || {};
+
+  if (Array.isArray(data.detected_errors)) {
+    const filtered = data.detected_errors.filter((item) => {
+      const original = (item.original || "").trim();
+      const corrected = (item.corrected || "").trim();
+      return original && corrected && original !== corrected;
+    });
+
+    return {
+      ...data,
+      detected_errors: filtered,
+    };
+  }
+
+  const correctedText = data.corrected || "";
+  const changed = Array.isArray(data.changed_words) ? data.changed_words : [];
+
+  const detectedErrors = changed
+    .map((item) => {
+      const corrected = item.corrected || "";
+      const original = item.original || "";
+      const position = corrected
+        ? correctedText.toLowerCase().indexOf(corrected.toLowerCase())
+        : -1;
+
+      return {
+        original,
+        corrected,
+        category: item.category || "Correction",
+        position: position < 0 ? 0 : position,
+      };
+    })
+    .filter((item) => {
+      const original = item.original.trim();
+      const corrected = item.corrected.trim();
+      return original && corrected && original !== corrected;
+    });
+
+  return {
+    corrected: correctedText,
+    detected_errors: detectedErrors,
+    mixed_kept: data.mixed_kept || [],
+    latency: data.latency || 0,
+    accuracy: data.accuracy || 0,
+  };
 }

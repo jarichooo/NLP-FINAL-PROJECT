@@ -80,3 +80,18 @@
 - Enhanced rate limiting: session window now persists in localStorage (survives page refresh).
 - Upgraded Workspace metrics: switched from character count to word count with a 2500-word limit.
 - UI Polish: fixed timer icon visibility and added red highlighting for over-limit word counts.
+- Pointed frontend API base URL to the hosted backend and updated docs.
+- Added Vite dev proxy and switched API client to relative base URL to avoid CORS.
+- Normalized hosted backend response shape to match frontend schema.
+- Increased API timeout and added a clearer timeout error message for hosted backend.
+- Bumped API timeout to 120 seconds.
+- Switched API base URL to call the hosted backend directly.
+- Fixed hosted API path to `/api/process`.
+- Filtered out unchanged items so only real corrections are highlighted.
+- Removed the Load Example button and reset rate-limit state when the cooldown window clears.
+- Kept case-only corrections so highlights match corrected words.
+- Derived highlights and Changed list from a word-diff of original vs corrected text for accurate multi-word fixes.
+- Grouped consecutive corrected words into a single highlight span.
+- Aligned corrections using normalized tokens to avoid merging unrelated fixes.
+- Highlighted corrected output by change group to prevent separate fixes from merging.
+- Preserved visible spacing between separate highlight groups while keeping multi-word highlights intact.
