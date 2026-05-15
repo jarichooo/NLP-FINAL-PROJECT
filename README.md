@@ -1,6 +1,6 @@
 # Morphism — Taglish Grammar Correction
 
-A Taglish (Filipino–English code-switched) grammar correction project built as a final requirement for the **Natural Language Processing** course.
+A Taglish (Filipino–English code-switched) grammar correction project built as a final requirement for the **Natural Language Processing** course at CSPC.
 
 This repository contains three main parts:
 
@@ -24,8 +24,8 @@ This repository contains three main parts:
 ---
 
 ## Backend (Flask API)
-
-### What’s implemented
+https://huggingface.co/spaces/jarichooo/Morphism/tree/main
+### What's implemented
 
 - Flask app factory in `backend/app/__init__.py`
 - API routes in `backend/app/routes.py`
@@ -33,7 +33,16 @@ This repository contains three main parts:
 
 ### API
 
-#### `POST /predict`
+**Base URL:** `https://jarichooo-morphism.hf.space`
+
+#### `POST /api/process`
+
+**Request**
+
+```http
+POST https://jarichooo-morphism.hf.space/api/process
+Content-Type: application/json
+```
 
 **Request body**
 
@@ -46,11 +55,22 @@ This repository contains three main parts:
 ```json
 {
   "original": "...",
-  "corrected": "..."
+  "corrected": "...",
+  "changed_words": [{ "original": "...", "corrected": "..." }]
 }
 ```
 
-> Note: The current backend implementation returns **sample/dummy corrections** (see `backend/app/model.py`). This makes the end-to-end app runnable even without loading a large model at runtime.
+> **Note:** `changed_words` is a list of word-level diffs between the original and corrected text. Only changed words are included.
+
+**Example (cURL)**
+
+```bash
+curl -X POST https://jarichooo-morphism.hf.space/api/process \
+  -H "Content-Type: application/json" \
+  -d '{"text": "mag-kain siya"}'
+```
+
+> **Rate limit:** 9 requests per 2 minutes.
 
 ### Run locally
 
@@ -79,6 +99,7 @@ npm run dev
 ## ML Pipeline
 
 See `ml_pipeline/README.md` for details on:
+
 - the training notebook workflow
 - dataset preparation
 - model artifacts and evaluation outputs
@@ -87,6 +108,8 @@ See `ml_pipeline/README.md` for details on:
 
 ## Course Info
 
-**Course:** Natural Language Processing — CSPC  
-**Submission:** Final Project  
-**Due:** 2026-05-15
+| | |
+|---|---|
+| **Course** | Natural Language Processing — CSPC |
+| **Submission** | Final Project |
+| **Due** | 2026-05-15 |
